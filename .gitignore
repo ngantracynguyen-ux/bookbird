@@ -1,0 +1,15 @@
+# secrets — KHÔNG commit
+.env
+.env.deploy
+sa.json
+*.sa.json
+
+# python
+__pycache__/
+*.pyc
+
+# temp
+_*.py
+_*.js
+_*.svg
+_*.png

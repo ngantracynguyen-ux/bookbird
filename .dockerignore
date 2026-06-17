@@ -1,0 +1,6 @@
+.env
+.env.*
+*.json
+__pycache__/
+*.pyc
+README.md
