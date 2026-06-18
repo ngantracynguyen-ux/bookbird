@@ -18,6 +18,35 @@ Booking a meeting room usually takes several minutes: opening each room's calend
 
 ---
 
+## 🧩 Skills & Capabilities
+
+The agent exposes the following **skills (tools)** the LLM calls to get work done:
+
+| Skill (tool) | What it does |
+|--------------|--------------|
+| `current_date` | Resolves "today / tomorrow / next week" and the 14-day booking window |
+| `check_rooms` | Lists rooms free for a given date/time/capacity |
+| `suggest_time` | **Explainable AI** — finds a slot free for *everyone*, scanning across days when full, and explains *why* (🧠 "considered busy calendars…") |
+| `prepare_booking` | Builds a booking draft (auto-picks the smallest fitting room) for review |
+| `book_recurring` | Schedules recurring meetings (daily/weekly/biweekly), holding the same room & dodging conflicts |
+| `my_schedule` | Shows the user's upcoming meetings (day/week/month) |
+| `book_like_last` | Smart default — suggests a booking from the user's habits |
+| `cancel_booking` / `reschedule_booking` | Cancel or move a meeting — **only the organizer can edit their own bookings** |
+| `compose_email` | AI-drafts the invitation body from the meeting purpose |
+| `translate_email` | Translates the invite to English / Chinese / Japanese / Vietnamese |
+
+**Platform & UX skills**
+
+- 💬 **Chat + 🎤 voice** input (hands-free), **bilingual VI/EN**, mobile-friendly
+- 📅 **Google Calendar** sync (company-wide shared rooms) with anti-double-booking — same room, overlapping time, *and* the organizer's own clashes
+- 🛡️ **Ownership rules** — room status is shared across the company, but cancel/reschedule is limited to the booking's creator
+- ✉️ **Real email** invites via SMTP · CC/BCC · custom signature · live preview
+- 🔔 **In-app reminders** before upcoming meetings
+- 🗺️ Room **availability heatmap**, ↩️ quote-reply on each message, 🕊️ animated mascot, 🎉 confetti on success
+- 🧠 **Memory** — learns favorite room, frequent attendees, common purpose (GreenNode Memory)
+
+---
+
 ## Run locally
 
 ```bash
