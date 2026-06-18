@@ -1,45 +1,51 @@
-# Room Booking Agent
+# 🕊️ BookBird — Meeting Room Booking Assistant
 
-Trợ lý đặt phòng họp qua web chat. Kiểm tra điều kiện phòng → gợi ý phòng trống → soạn mail → review → gửi xác nhận.
+> **Chim Báo Bão** · Track: Chat Agent · Built & deployed on **GreenNode AgentBase**
 
-## Phòng & quy tắc
-| Phòng | Sức chứa | Loại |
-|-------|----------|------|
-| A, B | 4 | meeting |
-| C, D | 6 | meeting |
-| E | 10 | meeting |
-| F | 30 | training |
+Booking a meeting room usually takes several minutes: opening each room's calendar, checking capacity, hunting for a free slot everyone shares, and hand-writing invitation emails — often ending in double-bookings or forgotten recurring meetings.
 
-- Giờ hoạt động: **8:00–18:00**
-- Đặt trước tối đa: **14 ngày**
-- Trạng thái: `available` / `busy`
+**BookBird** is a chat- and voice-powered meeting room booking assistant that dramatically reduces this effort. Users simply describe their meeting needs via chat or voice, and the agent automatically:
 
-## Workflow
-1. Nhận yêu cầu đặt phòng (web chat).
-2. Kiểm tra: trạng thái (rảnh/bận qua Google Calendar), sức chứa, khung giờ, hạn 14 ngày.
-3. Gợi ý phòng thỏa điều kiện.
-4. Thu thập: phòng, email người dự, mục đích, nội dung, link online/docs.
-5. Tạo **thẻ review** (popup) — người dùng kiểm tra.
-6. Bấm **Xác nhận & gửi mail** → tạo event Calendar + gửi mail.
+- Filters available rooms based on capacity, operating hours, and the 14-day booking window
+- Suggests meeting times that avoid conflicts across all participants' calendars
+- Generates multilingual meeting invitation emails automatically
+- Supports recurring meeting scheduling
+- Sends pre-meeting reminders
+- Learns individual user preferences and booking habits
+- Handles meeting cancellations and rescheduling
 
-## Chế độ MOCK
-Khi `GOOGLE_SA_CREDENTIALS` trống, agent dùng bộ nhớ tạm (in-memory) để demo toàn bộ luồng. Khi điền credential service account + calendar ID của từng phòng → tự chuyển sang Google Calendar thật.
+**Value Proposition:** BookBird reduces the meeting room booking process from several minutes to just a few seconds, eliminates scheduling conflicts, and standardizes meeting invitations across teams and departments — all built and deployed on **GreenNode AgentBase**.
 
-### Bật Google Calendar thật
-1. Tạo service account trên Google Cloud, bật Calendar API, tải JSON key.
-2. Tạo 6 Google Calendar (mỗi phòng 1 cái), share cho email service account quyền **"Make changes to events"**.
-3. Điền `GOOGLE_SA_CREDENTIALS` (nội dung JSON hoặc path) và `ROOM_<X>_CALENDAR_ID`.
+---
 
-## Chạy local
+## Run locally
+
 ```bash
-docker build -t room-booking .
-docker run -p 8080:8080 --env-file .env room-booking
-# mở http://localhost:8080
+pip install -r requirements.txt
+cp .env.example .env   # điền LLM_API_KEY, SMTP_*, (tuỳ chọn) Google Calendar
+python main.py         # http://localhost:8080
 ```
 
-## Endpoints
-- `GET /` — giao diện chat
-- `POST /invocations` — chat (header `X-GreenNode-AgentBase-User-Id`, `-Session-Id`)
-- `POST /confirm` — xác nhận đặt phòng `{ "draft_id": "..." }`
-- `GET /rooms?date&start_time&end_time` — card tình trạng phòng
-- `GET /health` — health + chế độ calendar
+Or with Docker:
+
+```bash
+docker build -t bookbird .
+docker run -p 8080:8080 --env-file .env bookbird
+```
+
+## Configuration (`.env`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `LLM_API_KEY`, `LLM_MODEL`, `LLM_BASE_URL` | ✅ | LLM (OpenAI-compatible, e.g. GreenNode MaaS) |
+| `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` | optional | Send real invitation emails (omit → skip sending) |
+| `GOOGLE_SA_CREDENTIALS_B64` + `ROOM_A..F_CALENDAR_ID` | optional | Use real Google Calendar; omit → MOCK mode (in-memory) |
+| `MEMORY_ID`, `MEMORY_STRATEGY_ID` | optional | Remember user habits via GreenNode Memory |
+
+See [`GCAL-SETUP.md`](GCAL-SETUP.md) to connect Google Calendar, and [`SUBMISSION.md`](SUBMISSION.md) for the full description & demo script.
+
+## Test
+
+```bash
+pip install pytest && pytest -q tests
+```
