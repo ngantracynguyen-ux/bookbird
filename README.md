@@ -18,6 +18,20 @@ Booking a meeting room usually takes several minutes: opening each room's calend
 
 ---
 
+## 🤖 Model & Stack
+
+| | |
+|---|---|
+| **LLM model** | `minimax/minimax-m2.5` — a reasoning model served via **GreenNode MaaS** (OpenAI-compatible API). Set with the `LLM_MODEL` env var; swappable for any OpenAI-compatible model. |
+| **Agent framework** | LangChain `create_agent` + LangGraph (tool-calling agent, checkpointer for conversation memory) |
+| **Backend** | FastAPI + Uvicorn · single-file embedded web UI |
+| **Calendar** | Google Calendar API (service account) with in-memory MOCK fallback |
+| **Email** | SMTP (real invitation emails) |
+| **Memory** | GreenNode Memory (`AgentBaseMemoryEvents`) for per-user preferences |
+| **Deploy** | Docker → GreenNode AgentBase runtime |
+
+---
+
 ## 🧩 Skills & Capabilities
 
 The agent exposes the following **skills (tools)** the LLM calls to get work done:
